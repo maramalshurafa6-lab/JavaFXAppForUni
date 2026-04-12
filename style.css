@@ -1,0 +1,163 @@
+.root {
+    -fx-background-color: #f4f6f8;
+    -fx-font-family: "Arial";
+    -fx-font-size: 12px;
+}
+
+/* Left panel */
+#left-panel {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #d9e2ec;
+    -fx-border-width: 1;
+}
+
+/* Center panel */
+#center-panel {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #d9e2ec;
+    -fx-border-width: 1;
+}
+
+/* Right panel */
+#right-panel {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #d9e2ec;
+    -fx-border-width: 1;
+}
+
+/* Titles */
+#main-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #102a43;
+}
+
+#section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #243b53;
+}
+
+/* Labels */
+.label {
+    -fx-text-fill: #334e68;
+    -fx-font-size: 1.2em;
+}
+
+/* Text field */
+.text-field {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #bcccdc;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 10 8 10;
+    -fx-font-size: 13px;
+}
+
+.text-field:focused {
+    -fx-border-color: #4f8ef7;
+    -fx-background-color: white;
+}
+
+/* ComboBox */
+.combo-box {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #bcccdc;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-size: 13px;
+}
+
+.combo-box:focused {
+    -fx-border-color: #4f8ef7;
+}
+
+/* Button */
+#save-btn {
+    -fx-background-color: #2f80ed;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 18 10 18;
+    -fx-cursor: hand;
+}
+
+#save-btn:hover {
+    -fx-background-color: #1c6dd0;
+}
+
+/* ListView */
+.list-view {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #bcccdc;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.list-cell {
+    -fx-font-size: 13px;
+    -fx-padding: 8;
+    -fx-text-fill: #243b53;
+}
+
+.list-cell:selected {
+    -fx-background-color: #d9eaff;
+    -fx-text-fill: black;
+}
+
+/* RadioButton and CheckBox */
+.radio-button,
+.check-box {
+    -fx-font-size: 13px;
+    -fx-text-fill: #334e68;
+}
+
+/* ColorPicker */
+.color-picker {
+    -fx-background-radius: 8;
+}
+
+/* Optional: spacing inside form */
+#form-grid {
+    -fx-background-color: transparent;
+}
+
+
+
+
+
+.bold-style{
+    -fx-font-weight:bold;
+}
+.italic-style{
+    -fx-font-style:italic;
+}
+
+
+
+
+.small-font {
+    -fx-font-size: 5px;
+}
+
+.medium-font {
+    -fx-font-size: 10px;
+}
+
+.large-font {
+    -fx-font-size: 15px;
+}
+
+.xlarge-font {
+    -fx-font-size: 20px;
+}

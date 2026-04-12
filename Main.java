@@ -1,178 +1,365 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.*;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.io.*;
-import java.util.Scanner;
+public class Main extends Application implements EventHandler<ActionEvent> {
 
-public class Main extends Application {
-
-    private TextField firstNumberField;
-    private TextField secondNumberField;
-    private Label resultPlace;
-    private Label history;
-    private final String HISTORY_FILE = "history.txt";
+    ComboBox<String> id;
+    TextField name;
+    RadioButton male;
+    RadioButton female;
+    ToggleGroup tg;
+    ListView<String> preferedPL;
+    ListView<String> selectedPL;
+    String[] pl = { "Java", "Python", "C++", "PHP", "JavaScript" };
+    Button save;
+    Button arrow;
+    CheckBox c1, c2, c3;
+    RadioButton r1, r2, r3;
+    ComboBox<Integer> cb;
+    ColorPicker cp;
+    ListView<String> studentList;
+    BorderPane root;
+    Label title;
+    Label message;
+    ArrayList<Student> students = new ArrayList<>();
 
     @Override
     public void start(Stage stage) {
+        id = new ComboBox<>();
+        id.setPromptText("Select ID");
+        id.setPrefWidth(200);
 
-        
-        Label firstNumberLable = new Label("Number 1:");
-        firstNumberField = new TextField();
-        firstNumberField.setPromptText("Enter First Number");
+        name = new TextField();
+        name.setPromptText("Enter student name");
+        name.setPrefWidth(200);
 
-        HBox firstNumberRow = new HBox(10, firstNumberLable, firstNumberField);
-        firstNumberRow.setAlignment(Pos.CENTER);
+        male = new RadioButton("Male");
+        female = new RadioButton("Female");
+        tg = new ToggleGroup();
+        male.setToggleGroup(tg);
+        female.setToggleGroup(tg);
 
-        Label secondNumberLable = new Label("Number 2:");
-        secondNumberField = new TextField();
-        secondNumberField.setPromptText("Enter Second Number");
+        ObservableList<String> ol = FXCollections.observableArrayList(pl);
+        preferedPL = new ListView<>(ol);
+        selectedPL = new ListView<>();
+        preferedPL.setPrefSize(150, 120);
+        selectedPL.setPrefSize(150, 120);
 
-        HBox secondNumberRow = new HBox(10, secondNumberLable, secondNumberField);
-        secondNumberRow.setAlignment(Pos.CENTER);
+        preferedPL.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        arrow = new Button(">>>>>");
+        arrow.setPrefWidth(60);
+        save = new Button("Save");
+        save.setPrefWidth(100);
+        message = new Label("");
+        message.setStyle("-fx-text-fill: red;");
+        ///////////////////////////////////////////////
+        c1 = new CheckBox("Normal");
+        c2 = new CheckBox("Bold");
+        c3 = new CheckBox("Italic");
 
-        
-        Button addition = new Button("+");
-        Button subtraction = new Button("-");
-        Button multiplication = new Button("*");
-        Button division = new Button("/");
+        r1 = new RadioButton("Red");
+        r2 = new RadioButton("Green");
+        r3 = new RadioButton("Blue");
 
-        addition.setPrefWidth(60);
-        subtraction.setPrefWidth(60);
-        multiplication.setPrefWidth(60);
-        division.setPrefWidth(60);
+        ToggleGroup tg2 = new ToggleGroup();
+        r1.setToggleGroup(tg2);
+        r2.setToggleGroup(tg2);
+        r3.setToggleGroup(tg2);
 
-        addition.setOnAction(e -> calculate("+"));
-        subtraction.setOnAction(e -> calculate("-"));
-        multiplication.setOnAction(e -> calculate("*"));
-        division.setOnAction(e -> calculate("/"));
+        cb = new ComboBox<>();
+        cb.getItems().addAll(5, 10, 15, 20);
+        cb.setValue(10);
+        cb.setPrefWidth(120);
 
-        HBox operators = new HBox(10, addition, subtraction, multiplication, division);
-        operators.setAlignment(Pos.CENTER);
+        cp = new ColorPicker();
+        cp.setValue(Color.WHITE);
+        ///////////////////////////////////////
+        studentList = new ListView<>();
+        studentList.setPrefSize(250, 350);
+        ///////////////////////////////////////////
+        Label designTitle = new Label("Design Tools");
+        VBox leftBox = new VBox(12);
+        leftBox.setPadding(new Insets(20));
+        leftBox.setAlignment(Pos.TOP_LEFT);
+        leftBox.setPrefWidth(180);
+        leftBox.getChildren().addAll(
+                designTitle,
+                new Label("Style"),
+                c1, c2, c3,
+                new Label("Color"),
+                r1, r2, r3,
+                new Label("Font Size"),
+                cb,
+                new Label("Custom Color"),
+                cp);
+        ////////////////////////////////////////////////
+        title = new Label("Student Registration System");
 
-        
-        Label resultLabel = new Label("Result:");
-        resultPlace = new Label("");
+        HBox genderBox = new HBox(15, male, female);
+        genderBox.setAlignment(Pos.CENTER_LEFT);
 
-        VBox resultBox = new VBox(resultLabel, resultPlace);
-        resultBox.setAlignment(Pos.CENTER);
+        HBox plBox = new HBox(20, preferedPL, arrow, selectedPL);
+        plBox.setAlignment(Pos.CENTER_LEFT);
 
-        Button clearBtn = new Button("Clear");
-        Button historyBtn = new Button("History");
-        clearBtn.setPrefWidth(100);
-        historyBtn.setPrefWidth(100);
+        GridPane formGrid = new GridPane();
+        formGrid.setHgap(20);
+        formGrid.setVgap(18);
+        formGrid.setAlignment(Pos.TOP_CENTER);
 
-        clearBtn.setOnAction(e -> clear());
-        historyBtn.setOnAction(e -> history());
+        formGrid.add(title, 0, 0, 2, 1);
+        formGrid.add(new Label("ID:"), 0, 1);
+        formGrid.add(id, 1, 1);
+        formGrid.add(new Label("Name:"), 0, 2);
+        formGrid.add(name, 1, 2);
+        formGrid.add(new Label("Gender:"), 0, 3);
+        formGrid.add(genderBox, 1, 3);
+        formGrid.add(new Label("PL:"), 0, 4);
+        formGrid.add(plBox, 1, 4);
+        formGrid.add(save, 1, 5);
+        formGrid.add(message, 1, 6);
 
-        HBox actions = new HBox(10, clearBtn, historyBtn);
-        actions.setAlignment(Pos.CENTER);
+        VBox centerBox = new VBox();
+        centerBox.getChildren().add(formGrid);
 
-        
-        Label historyLabel = new Label("History:");
-        history = new Label("");
+        ////////////////////////////////////////////////
 
-        VBox historyBox = new VBox(5, historyLabel, history);
-        historyBox.setAlignment(Pos.CENTER);
+        Label savedTitle = new Label("Saved Students");
 
-        
-        VBox root = new VBox(15); // 15 هي المسافة بين كل node في ال VBox
+        VBox rightBox = new VBox(15);
+        rightBox.setPadding(new Insets(20));
+        rightBox.setAlignment(Pos.TOP_CENTER);
+        rightBox.setPrefWidth(280);
+        rightBox.getChildren().addAll(savedTitle, studentList);
+        ///////////////////////////////////////////////////////////
+        root = new BorderPane();
         root.setPadding(new Insets(20));
-        root.setAlignment(Pos.CENTER);
+        root.setLeft(leftBox);
+        root.setCenter(centerBox);
+        root.setRight(rightBox);
 
-        root.getChildren().addAll(
-                firstNumberRow,
-                secondNumberRow,
-                operators,
-                resultBox,
-                actions,
-                historyBox);
+        /////////////////////////////////////////
+        leftBox.setId("left-panel");
+        centerBox.setId("center-panel");
+        rightBox.setId("right-panel");
+        formGrid.setId("form-grid");
+        save.setId("save-btn");
+        designTitle.setId("section-title");
+        title.setId("main-title");
+        savedTitle.setId("section-title");
+        ////////////////////////////////////////////////////
+        /// ////////////////////////////////////////////////
+        c1.setOnAction(e -> {
+            if (c1.isSelected()) {
+                root.getStyleClass().remove("bold-style");
+                root.getStyleClass().remove("italic-style");
+            }
+        });
 
-        Scene scene = new Scene(root, 400, 400);
+        c2.setOnAction(e -> {
+            if (c2.isSelected()) {
+                root.getStyleClass().add("bold-style");
+            } else {
+                root.getStyleClass().remove("bold-style");
+            }
+        });
+        c3.setOnAction(e -> {
+            if (c3.isSelected()) {
+                root.getStyleClass().add("italic-style");
+            } else {
+                root.getStyleClass().remove("italic-style");
+            }
+        });
 
+        //////////////////////////////////////////////////////////
+        try {
+            readFromFile();
+        } catch (ClassNotFoundException e) {
+            System.out.println(e);
+        }
+
+        /// ////////////////////////////////////////////////////
+
+        cb.setOnAction(e -> applyFontSize());
+        r1.setOnAction(this);
+        r2.setOnAction(this);
+        r3.setOnAction(this);
+        cp.setOnAction(this);
+        arrow.setOnAction(this);
+        save.setOnAction(this);
+        id.setOnAction(e -> {
+            applyInfoForSelectedId();
+        });
+        /////////////////////////////////
+
+        // ========== Scene===============
+
+        Scene scene = new Scene(root, 1000, 500);
+        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+        stage.setTitle("Student Registration System");
         stage.setScene(scene);
-        stage.setTitle("JavaFX Calculator with History");
         stage.show();
+        stage.setAlwaysOnTop(true);
+        stage.setOnCloseRequest(e -> {
+            saveToFile();
+        });
     }
 
-    private void calculate(String operator) {
-        try {
-            double n1 = Double.parseDouble(firstNumberField.getText());
-            double n2 = Double.parseDouble(secondNumberField.getText());
-            double result = 0;
+    @Override
+    public void handle(ActionEvent a) {
+        String backgroundColor = "white";
 
-            switch (operator) {
-                case "+":
-                    result = n1 + n2;
-                    break;
-                case "-":
-                    result = n1 - n2;
-                    break;
-                case "*":
-                    result = n1 * n2;
-                    break;
-                case "/":
-                    if (n2 == 0) {
-                        resultPlace.setText("Cannot divide by zero");
-                        return;
-                    }
-                    result = n1 / n2;
-                    break;
+        String gender = "";
+        if (r1.isSelected()) {
+            backgroundColor = "red";
+        }
+        if (r2.isSelected()) {
+            backgroundColor = "green";
+        }
+        if (r3.isSelected()) {
+            backgroundColor = "blue";
+        }
+        root.setStyle("-fx-background-color:" + backgroundColor);
+
+        if (a.getSource() == cp) {
+            String color = cp.getValue().toString().replace("0x", "");
+            save.setStyle("-fx-background-color: #" + color);
+        }
+        if (a.getSource() == arrow) {
+            ObservableList<String> ol = FXCollections
+                    .observableArrayList(preferedPL.getSelectionModel().getSelectedItems());
+            preferedPL.getItems().removeAll(ol);
+            selectedPL.getItems().addAll(ol);
+
+        }
+
+        if (male.isSelected()) {
+            gender = "male";
+        }
+        if (female.isSelected()) {
+            gender = "female";
+        }
+        if (a.getSource() == save) {
+            if (validate()) {
+                Student s = new Student(name.getText(), gender);
+                s.setPl(new ArrayList<>(selectedPL.getItems()));
+                students.add(s);
+                studentList.getItems().add(s.toString());
+                id.getItems().add(s.getId());
+                clear();
+            } else {
+                message.setText("Name and gender are required!");
             }
-
-            String operation = n1 + " " + operator + " " + n2 + " = " + result;
-
-            resultPlace.setText(String.valueOf(result));
-
-            saveToHistoryFile(operation);
-
-        } catch (Exception e) {
-            resultPlace.setText("Invalid input");
         }
     }
 
-    private void saveToHistoryFile(String operation) {
-        try {
+    public void applyFontSize() {
+        root.getStyleClass().removeAll(
+                "small-font",
+                "medium-font",
+                "large-font",
+                "xlarge-font");
+        if (cb.getValue() == 5) {
+            root.getStyleClass().add("small-font");
+        } else if (cb.getValue() == 10) {
+            root.getStyleClass().add("medium-font");
+        } else if (cb.getValue() == 15) {
+            root.getStyleClass().add("large-font");
+        } else if (cb.getValue() == 20) {
+            root.getStyleClass().add("xlarge-font");
+        }
+    }
 
-            FileWriter writer = new FileWriter(HISTORY_FILE, true);
+    public boolean validate() {
+        if (name.getText().isBlank() || tg.getSelectedToggle() == null) {
+            return false;
+        }
+        return true;
+    }
 
-            writer.write(operation + "\n");
-            writer.close();
+    public void clear() {
+        name.setText("");
+        male.setSelected(false);
+        female.setSelected(false);
+        selectedPL.getItems().clear();
+        preferedPL.getItems().setAll(pl);
+        message.setText("");
+    }
+
+    public void saveToFile() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(
+                new FileOutputStream("students.dat"))) {
+            oos.writeObject(students);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+    }
+
+    public void readFromFile() throws ClassNotFoundException {
+        File f = new File("students.dat");
+        if (!f.exists()) {
+            System.out.println("No File yet");
+            return;
+        }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
+            students = (ArrayList<Student>) ois.readObject(); 
+                                                              
+                                                              
+            for (Student s : students) {
+                studentList.getItems().add(s.toString());
+                id.getItems().add(s.getId());
+            }
+
+            if (!students.isEmpty()) {
+
+                int stdId = Integer.parseInt(students.get(students.size() - 1).getId().substring(5));
+
+                Student.counter = stdId + 1;
+            }
 
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+            System.out.println(e);
         }
+
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////
-    private void history() {
-        try {
-            Scanner sc = new Scanner(new File(HISTORY_FILE));
-            history.setText(""); // مسح السجل القديم
+    public void applyInfoForSelectedId() {
+        if (id.getValue() == null)
+            return;
+        String selectedId = id.getValue();
+        for (Student s : students) {
+            if (s.getId().equals(selectedId)) {
+                name.setText(s.getName());
+                char firstDigit = s.getId().charAt(0);
+                if (firstDigit == '1') {
+                    male.setSelected(true);
+                    female.setSelected(false);
+                } else if (firstDigit == '2') {
+                    female.setSelected(true);
+                    male.setSelected(false);
+                }
+                preferedPL.getItems().setAll(pl);
+                selectedPL.getItems().clear();
+                selectedPL.getItems().addAll(s.getPl());
 
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine(); 
-                history.setText(history.getText() + line + "\n"); // ننساش السجل القديم عشان هذه loop تنشئ كل شي من جديد
+                break;
             }
-
-            sc.close();
-
-        } catch (Exception e) {
-            System.out.println("File Error");
         }
-    }
-    /// /////////////////////////////////////////////////////////////////////////////
-    ///
-
-    private void clear() {
-        firstNumberField.clear();
-        secondNumberField.clear();
-        resultPlace.setText("");
-        history.setText("");
     }
 
     public static void main(String[] args) {
